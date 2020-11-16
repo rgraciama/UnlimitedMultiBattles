@@ -31,7 +31,10 @@
     ScriptDescription := "This application allows unlimited auto battles on official 'Raid: Shadow Legends' for Windows."
     ProjectDescription := "This project is open source project and it's licensed under Apache 2.0. Our source code and additional informations can be found at our Github repository.`n"
     ScriptSite := "https://github.com/rafaco/UnlimitedMultiBattles"
-
+    Link1_url := "https://lafogataderaid.com/"
+    Link1_info := "Lugar de Senda."
+    Link2_url  := "https://ayumilove.net/raid-shadow-legends-list-of-champions-by-ranking/"
+    Link2_info := "Info de champs,"
 
     ;; Constants
     isDebug := false
@@ -51,7 +54,7 @@
     StarSymbol := Chr(0x2605)
     COLOR_GRAY := "c808080"
     SS_CENTERIMAGE := 0x200
-    TCS_FIXEDWIDTH := 0x0400
+    TCS_FIXEDWIDTH := 0x0800
     TCM_SETITEMSIZE := 0x1329
     PBS_MARQUEE := 0x8
     PBM_SETMARQUEE := 0x40A
@@ -103,6 +106,7 @@
     ;Menu, Tray, Icon, images\icon.ico
     Menu, InfoMenu, Add, Help, MenuHandler
     Menu, InfoMenu, Add, About, MenuHandler
+    Menu, InfoMenu, Add, Links, MenuHandler
     infoLabel := "&Info    "
     Menu, MainMenuBar, Add, %infoLabel%, :InfoMenu, Right
     
@@ -263,7 +267,14 @@
     Gui, About:Add, Text, w120 ys Section,
     Gui, About:Add, Button, ys w100 h30 gGoToSite %SS_CENTERIMAGE% Center, Go to GitHub
     
-    
+    ; Load Links GUI
+    Gui, Links:Font, s11 bold
+    Gui, Links:Add, Text, w350 Center Section, Links
+    Gui, Links:Font, s10 normal
+    Gui, Links:Add, Link,, %Link1_info% <a href="%Link1_url%">Go</a>
+    Gui, Links:Add, Link,, %Link2_info% <a href="%Link2_url%">Go</a>
+    Gui, Links:Add, Button, Section w100 h30 gShowMain %SS_CENTERIMAGE% Center Default, Back
+
     ; Init loaded UIs
     InitTimeComponents()    
     FillCalculatedResults(calculatedResults)
@@ -283,6 +294,7 @@ return ; End of auto-execute section
 ShowMain:
 ShowHelp:
 ShowAbout:
+ShowLinks:
 ShowRunning:
     Gui,+LastFound
     WinGetPos,x,y
@@ -307,7 +319,11 @@ MenuHandler:
     }
     else if (A_ThisMenuItem = "About"){
         GoSub ShowAbout
-    }else{
+
+    }else if (A_ThisMenuItem = "Links"){
+        GoSub ShowLinks
+
+    } else {
         MsgBox, No action for "%A_ThisMenuItem%" in menu "%A_ThisMenu%".
     }
 return
@@ -319,6 +335,7 @@ ExitApp
 ResultGuiClose:
 HelpGuiClose:
 AboutGuiClose:
+LinksGuiClose:
     GoSub ShowMain
 return
 
@@ -328,6 +345,10 @@ return
 
 GoToSite:
     Run %ScriptSite%
+return
+
+GoToLink(link):
+    Run link
 return
     
 GoToGame:
